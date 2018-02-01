@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "741881069442",
+    "firebase_url": "https://android-sample-app-10ca5.firebaseio.com",
+    "project_id": "android-sample-app-10ca5",
+    "storage_bucket": "android-sample-app-10ca5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741881069442:android:09650e02511ee4d4",
+        "android_client_info": {
+          "package_name": "com.openback.androidsampleapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "741881069442-jinitpr26a3qnun67hk2t1tv6g3ucg85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa0uWqmMq2dORFCYUpVFpePvVaiv-F6dY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
