@@ -1,8 +1,8 @@
 # OpenBack Android Sample App
 
-This application is a simple project highlighting the integration the OpenBack library into an Android application. It shows how to set custom trigger values from the code. It also comes with a ready made OpenBack app code, already setup with some simple campaigns reacting to the trigger values. The application is setup to use Firebase messaging for demonstration purposes.
+This application is a simple project highlighting the integration of the OpenBack library into an Android application. It shows how to set custom trigger values using the OpenBack SDK. It also comes with a ready made OpenBack app code, which has already been setup with some simple campaigns reacting to the trigger values. The application is setup to use Firebase messaging for demonstration purposes.
 
-> For the full Android integration guide, check the docs page at https://docs.openback.com/Android%20Library%20Integration.
+> For the full Android integration guide, check out the documentation at https://docs.openback.com/Android%20Library%20Integration.
 
 ## How the sample app was setup
 
@@ -24,7 +24,7 @@ A sound file named `ding` was added to the raw resources. This is the sound used
 
 A file named `openback.json` was added to the  **assets** folder with the following content:
  
-```
+``` json
 {
     "appCode": "VVMYXNHQXI",
     "notification": {
@@ -51,6 +51,10 @@ A file named `openback.json` was added to the  **assets** folder with the follow
 
 The [Application class](/app/src/main/java/com/openback/androidsampleapp/Application.java) was tweaked to setup OpenBack during its `onCreate()` call. Setting up OpenBack in the application class is preferred to a setup in the main activity as your application might be launched with a different activity.
 
-Check the [Main activity](/app/src/main/java/com/openback/androidsampleapp/MainActivity.java) to see how the custom triggers are called. 
+Check the [Main activity](/app/src/main/java/com/openback/androidsampleapp/MainActivity.java) to see how the custom triggers are called. For example:
+
+``` java
+OpenBack.setCustomTrigger(context, OpenBack.CUSTOM_TRIGGER_1, "Bob");
+``` 
 
 Firebase was setup by following the official documentation found at https://firebase.google.com/docs/android/setup.
