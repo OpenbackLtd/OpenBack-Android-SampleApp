@@ -1,6 +1,7 @@
 package com.openback.androidsampleapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -16,16 +17,10 @@ import com.openback.UserInfoExtra;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button customButton1;
-    Button customButton2;
-    Button customButton3;
-    Button checkCampaigns;
-    Button saveUserInfo;
     TextInputEditText firstName;
     TextInputEditText lastName;
     TextInputEditText email;
     TextInputEditText phone;
-    TextView sdkVersion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,36 +30,32 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        customButton1 = findViewById(R.id.customButton1);
-        customButton2 = findViewById(R.id.customButton2);
-        customButton3 = findViewById(R.id.customButton3);
-        checkCampaigns = findViewById(R.id.checkCampaigns);
         firstName = findViewById(R.id.firstName);
         lastName = findViewById(R.id.lastName);
         email = findViewById(R.id.email);
         phone = findViewById(R.id.phone);
-        saveUserInfo = findViewById(R.id.saveUserInfo);
-        sdkVersion = findViewById(R.id.sdkVersion);
+
         // Use this line to check the current OpenBack SDK version
+        TextView sdkVersion = findViewById(R.id.sdkVersion);
         sdkVersion.setText("OpenBack SDK Version is " + OpenBack.getSdkVersion());
 
         // Buttons for setting Custom Trigger values. These values can be set to String, int and float variables.
         // OpenBack typically supports up to 10 custom values, if you need more please discuss with OpenBack or email integrations@openback.com
-        customButton1.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.customButton1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OpenBack.setCustomTrigger(context, OpenBack.CUSTOM_TRIGGER_1, "Bob");
                 Toast.makeText(context, "Custom Trigger 1: String - Bob", Toast.LENGTH_SHORT).show();
             }
         });
-        customButton2.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.customButton2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OpenBack.setCustomTrigger(context, OpenBack.CUSTOM_TRIGGER_2, 42);
                 Toast.makeText(context, "Custom Trigger 2: int - 42", Toast.LENGTH_SHORT).show();
             }
         });
-        customButton3.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.customButton3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OpenBack.setCustomTrigger(context, OpenBack.CUSTOM_TRIGGER_3, 1.12f);
@@ -74,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Button to instantly call checkCampaigns. This will immediately check for any matching triggers on your user's device.
         // Although it is highly recommended to let the OpenBack library decide when to check the campaigns, you can force it right away.
-        checkCampaigns.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.checkCampaigns).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 OpenBack.checkCampaignsNow(context);
@@ -84,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         // This button takes in the user info and saves the details to UserInfoExtra.
         // All extra user info fields can be found at https://docs.openback.com/Android%20Library%20Integration/#openback-library-api
         // These must be added to the userInfoExtra object and updated through OpenBack.update()
-        saveUserInfo.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.saveUserInfo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 UserInfoExtra userInfoExtra = new UserInfoExtra();
@@ -99,6 +90,14 @@ public class MainActivity extends AppCompatActivity {
                 } catch (OpenBackException e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        findViewById(R.id.appInbox).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, InboxActivity.class);
+                startActivity(intent);
             }
         });
     }
