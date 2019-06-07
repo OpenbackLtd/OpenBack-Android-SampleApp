@@ -10,15 +10,17 @@ import com.openback.OpenBack;
 public class FcmService extends FirebaseMessagingService {
 
     @Override
-    public void onNewToken(String s) {
-        super.onNewToken(s);
-        Log.e("NEW_TOKEN", s);
+    public void onNewToken(String token) {
+        super.onNewToken(token);
+        Log.e("FIREBASE", "New token: " + token);
+        OpenBack.refreshToken(getApplicationContext(), token);
     }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        if (!OpenBack.handleFcmMessage(getApplicationContext(), remoteMessage)) {
+        if (!OpenBack.handleFcmMessage(getApplicationContext(), remoteMessage.getData())) {
             // FCM Message was not handled by OpenBack
+            Log.e("FIREBASE", "Not an OpenBack message");
         }
     }
 }

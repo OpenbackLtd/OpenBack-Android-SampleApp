@@ -36,8 +36,9 @@ public class Application extends MultiDexApplication {
     public void initOpenBack(Context context) {
         try {
             OpenBack.start(new OpenBack.Config(context)
-                    .setOpenBackAppCode("IYYTNHSYZA")
-                    .setUserEmail("YOUR_EMAIL@youremail.com"));
+                    .setOpenBackAppCode("IYYTNHSYZA") // Optional if set in the openback.json file
+                    .setUserEmail("YOUR_EMAIL@youremail.com") // Optional
+            );
         } catch (Exception e) {
             Log.d("CompanionApp", "Whoops", e);
         }
