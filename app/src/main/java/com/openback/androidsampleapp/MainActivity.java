@@ -1,26 +1,43 @@
 package com.openback.androidsampleapp;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import com.openback.OpenBack;
+import com.openback.OpenBackAppInbox;
+import com.openback.OpenBackAppInboxMessage;
 import com.openback.OpenBackException;
 import com.openback.UserInfoExtra;
 
-public class MainActivity extends AppCompatActivity {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import static com.openback.OpenBackAppInbox.APP_INBOX_MESSAGE_ADDED;
+import static com.openback.OpenBackAppInbox.APP_INBOX_MESSAGE_EXPIRED;
+import static com.openback.OpenBackAppInbox.APP_INBOX_MESSAGE_READ;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextInputEditText firstName;
     TextInputEditText lastName;
     TextInputEditText email;
     TextInputEditText phone;
+    ImageView eventIcon;
+    ArrayList<OpenBackAppInboxMessage> messages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         lastName = findViewById(R.id.lastName);
         email = findViewById(R.id.email);
         phone = findViewById(R.id.phone);
+        eventIcon = findViewById(R.id.eventIcon);
+        eventIcon.setOnClickListener(this);
 
         // Use this line to check the current OpenBack SDK version
         TextView sdkVersion = findViewById(R.id.sdkVersion);
@@ -100,5 +119,52 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    public void checkInbox() {
+        OpenBackAppInbox inbox = OpenBack.appInbox(getApplicationContext());
+        messages = inbox.getAllMessages();
+        if (messages.size() > 0) {
+            String payload = messages.get(0).getPayload();
+            setImage(payload);
+        }
+    }
+
+    // When the image is clicked, an event is triggered.
+    @Override
+    public void onClick(View view) {
+        if (view == eventIcon) {
+            OpenBack.triggerEvent(getApplicationContext(), "ImageClicked", 0);
+            OpenBack.checkCampaignsNow(getApplicationContext());
+            Toast.makeText(getApplicationContext(), "The event _ImageClicked_ has been triggered.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // This receiver updates whenever a new message is received to the inbox
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String event = intent.getStringExtra("event");
+            switch (event) {
+                case APP_INBOX_MESSAGE_ADDED:
+                case APP_INBOX_MESSAGE_READ:
+                case APP_INBOX_MESSAGE_EXPIRED:
+                    OpenBackAppInbox inbox = OpenBack.appInbox(getApplicationContext());
+                    messages = inbox.getAllMessages();
+                    checkInbox();
+                    break;
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
+
+    // This method sets the eventIcon image to whatever image is linked in the App Inbox payload
+    public void setImage(String string) {
+        Picasso.get().load(string).into(eventIcon);
     }
 }

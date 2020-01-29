@@ -152,6 +152,34 @@
         </LinearLayout>
 
         <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/saveUserInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:text="Save User Info" />
+
+        <Button
+            android:id="@+id/appInbox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:text="Open App Inbox" />
+
+    </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -159,32 +187,24 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <Button
-                android:id="@+id/saveUserInfo"
-                android:layout_width="0dp"
+            <ImageView
+                android:id="@+id/eventIcon"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
-                android:layout_weight="1"
-                android:text="Save User Info" />
+                app:srcCompat="@drawable/sampleimage"
+                android:layout_weight="1"/>
 
             <Button
-                android:id="@+id/appInbox"
-                android:layout_width="0dp"
+                android:id="@+id/checkCampaigns"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:layout_weight="1"
-                android:text="Open App Inbox" />
+                android:text="Check Campaigns Now" />
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/checkCampaigns"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:text="Check Campaigns Now" />
     </LinearLayout>
 </ScrollView>
