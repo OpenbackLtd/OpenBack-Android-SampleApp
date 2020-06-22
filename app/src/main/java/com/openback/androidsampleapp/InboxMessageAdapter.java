@@ -2,24 +2,25 @@ package com.openback.androidsampleapp;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.openback.OpenBackAppInboxMessage;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import com.openback.model.AppInboxMessage;
+
+import java.util.List;
 
 public class InboxMessageAdapter extends RecyclerView.Adapter<InboxMessageAdapter.ViewHolder> {
-    private ArrayList<OpenBackAppInboxMessage> mInboxMessages;
+    private List<AppInboxMessage> mInboxMessages;
     private LayoutInflater mInflater;
     private InboxMessageClickListener mClickListener;
 
-    InboxMessageAdapter(Context context, ArrayList<OpenBackAppInboxMessage> inboxMessages) {
+    InboxMessageAdapter(Context context, List<AppInboxMessage> inboxMessages) {
         this.mInflater = LayoutInflater.from(context);
         this.mInboxMessages = inboxMessages;
     }
@@ -33,14 +34,14 @@ public class InboxMessageAdapter extends RecyclerView.Adapter<InboxMessageAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        OpenBackAppInboxMessage message = mInboxMessages.get(position);
-        holder.inboxTitleView.setText(message.getTitle());
-        holder.inboxTitleView.setTypeface(null, message.isRead() ? Typeface.NORMAL : Typeface.BOLD);
-        holder.inboxContentView.setText(message.getContent());
-        holder.inboxContentView.setTypeface(null, message.isRead() ? Typeface.NORMAL : Typeface.BOLD);
-        holder.inboxPayloadView.setText(message.getPayload());
-        holder.inboxReadView.setImageResource(message.isRead() ? R.drawable.baseline_mail_outline_24 : R.drawable.baseline_email_24);
-        holder.inboxActionView.setVisibility(message.isActionable() ? View.VISIBLE : View.INVISIBLE);
+        AppInboxMessage message = mInboxMessages.get(position);
+        holder.inboxTitleView.setText(message.title);
+        holder.inboxTitleView.setTypeface(null, message.read ? Typeface.NORMAL : Typeface.BOLD);
+        holder.inboxContentView.setText(message.content);
+        holder.inboxContentView.setTypeface(null, message.read ? Typeface.NORMAL : Typeface.BOLD);
+        holder.inboxPayloadView.setText(message.payload);
+        holder.inboxReadView.setImageResource(message.read ? R.drawable.baseline_mail_outline_24 : R.drawable.baseline_email_24);
+        holder.inboxActionView.setVisibility(message.actionable ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -73,7 +74,7 @@ public class InboxMessageAdapter extends RecyclerView.Adapter<InboxMessageAdapte
         }
     }
 
-    OpenBackAppInboxMessage getInboxMessage(int id) {
+    AppInboxMessage getInboxMessage(int id) {
         return mInboxMessages.get(id);
     }
 

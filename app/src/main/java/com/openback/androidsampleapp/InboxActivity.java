@@ -5,45 +5,38 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.openback.OpenBack;
-import com.openback.OpenBackAppInbox;
-import com.openback.OpenBackAppInboxMessage;
+import com.openback.model.AppInboxMessage;
 
-import java.util.ArrayList;
-
-import static com.openback.OpenBackAppInbox.APP_INBOX_MESSAGE_ADDED;
-import static com.openback.OpenBackAppInbox.APP_INBOX_MESSAGE_EXPIRED;
-import static com.openback.OpenBackAppInbox.APP_INBOX_MESSAGE_READ;
-import static com.openback.OpenBackAppInbox.OPENBACK_APP_INBOX;
+import java.util.List;
 
 public class InboxActivity extends AppCompatActivity implements InboxMessageAdapter.InboxMessageClickListener {
 
     private InboxMessageAdapter inboxMessageAdapter;
-    private OpenBackAppInbox inbox;
-    private ArrayList<OpenBackAppInboxMessage> messages = new ArrayList<>();
+    private List<AppInboxMessage> messages;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String event = intent.getStringExtra("event");
-            switch (event) {
-                case APP_INBOX_MESSAGE_ADDED:
-                case APP_INBOX_MESSAGE_READ:
-                case APP_INBOX_MESSAGE_EXPIRED:
-                    messages.clear();
-                    messages.addAll(inbox.getAllMessages());
-                    inboxMessageAdapter.notifyDataSetChanged();
-                    break;
+            String event = intent.getStringExtra(OpenBack.APP_INBOX_EVENT_EXTRA);
+            if (event != null) {
+                switch (event) {
+                    case OpenBack.APP_INBOX_MESSAGE_ADDED:
+                    case OpenBack.APP_INBOX_MESSAGE_READ:
+                    case OpenBack.APP_INBOX_MESSAGE_EXPIRED:
+                        messages = OpenBack.getAppInboxMessages();
+                        inboxMessageAdapter.notifyDataSetChanged();
+                        break;
+                }
             }
         }
     };
@@ -53,8 +46,9 @@ public class InboxActivity extends AppCompatActivity implements InboxMessageAdap
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inbox);
 
-        inbox = OpenBack.appInbox(getApplicationContext());
-        messages = inbox.getAllMessages();
+        setTitle("OpenBack App Inbox");
+
+        messages = OpenBack.getAppInboxMessages();
 
         RecyclerView recyclerView = findViewById(R.id.inboxMessages);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
@@ -71,15 +65,15 @@ public class InboxActivity extends AppCompatActivity implements InboxMessageAdap
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-                OpenBackAppInboxMessage message = inboxMessageAdapter.getInboxMessage(position);
-                inbox.removeMessage(message);
+                AppInboxMessage message = inboxMessageAdapter.getInboxMessage(position);
+                OpenBack.removeAppInboxMessage(message);
                 messages.remove(position);
                 inboxMessageAdapter.notifyDataSetChanged();
             }
         });
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mMessageReceiver, new IntentFilter(OPENBACK_APP_INBOX));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mMessageReceiver, new IntentFilter(OpenBack.APP_INBOX_ACTION));
     }
 
     @Override
@@ -90,10 +84,12 @@ public class InboxActivity extends AppCompatActivity implements InboxMessageAdap
 
     @Override
     public void onInboxMessageClick(View view, int position) {
-        OpenBackAppInboxMessage message = inboxMessageAdapter.getInboxMessage(position);
-        if (message.isActionable()) {
-            inbox.executeMessage(message);
-            inboxMessageAdapter.notifyDataSetChanged();
+        AppInboxMessage message = inboxMessageAdapter.getInboxMessage(position);
+        if (message.actionable) {
+            OpenBack.executeAppInboxMessage(message);
+        } else {
+            OpenBack.markAppInboxMessageAsRead(message);
         }
+        inboxMessageAdapter.notifyDataSetChanged();
     }
 }
